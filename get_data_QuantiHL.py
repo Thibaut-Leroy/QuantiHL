@@ -7,7 +7,7 @@ def get_ohlcv(symbol, interval, lookback_days=20):
     end_time = datetime.now()
     start_time = end_time - timedelta(days=lookback_days)
 
-    url = 'https://api.hyperliquid-testnet.xyz/info'
+    url = 'https://api.hyperliquid.xyz/info'
     headers = {'Content-Type': 'application/json'}
     data = {
         "type": "candleSnapshot",
