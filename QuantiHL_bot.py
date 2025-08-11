@@ -21,7 +21,7 @@ import threading
 user_token = []
 user_timeframe = []
 secret_key = private_key
-account = LocalAccount = eth_account.Account.from_key(pk_testnet)
+account = LocalAccount = eth_account.Account.from_key(private_key)
 
 coin_chosen = []
 order_choice = []
@@ -247,7 +247,7 @@ def close_position(call):
         if order[2] == "":    
             bot.send_message(call.message.chat.id, f"⏳ Your order has been placed at {ask if is_buy else bid}")
             order_id = order[1]
-            orderHL.is_order_filled(address, order_id)
+            orderHL.is_order_filled(account.address, order_id)
             bot.send_message(call.message.chat.id, "✅ Your order has been filled")
             user_position["pos_number"] = 0
         else:
@@ -334,7 +334,7 @@ def place_order_bid_ask_price(call):
         if order[2] == "":
             bot.send_message(call.message.chat.id, f"⏳ Your order has been placed at {px}")
             order_id = order[1]
-            orderHL.is_order_filled(address, order_id)
+            orderHL.is_order_filled(account.address, order_id)
             bot.send_message(call.message.chat.id, "✅ Your order has been filled")
         else:
             bot.send_message(call.message.chat.id, f"Error: {order[2]}")
@@ -359,7 +359,7 @@ def place_order_custom_price(message):
         if order[2] == "":
             bot.send_message(message.chat.id, f"⏳ Your order has been placed at {px}")
             order_id = order[1]
-            orderHL.is_order_filled(address, order_id)
+            orderHL.is_order_filled(account.address, order_id)
             bot.send_message(message.chat.id, "✅ Your order has been filled")
         else:
             bot.send_message(message.chat.id, f"Error : {order[2]}")
