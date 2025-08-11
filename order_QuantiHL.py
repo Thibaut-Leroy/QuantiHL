@@ -5,7 +5,6 @@ from hyperliquid.exchange import Exchange
 from hyperliquid.utils import constants
 from hyperliquid.info import Info
 import positions_QuantiHL as positionsHL
-from key_file import address
 
 def usd_to_size(symbol, leverage, usd_size, is_buy):
     
@@ -22,7 +21,7 @@ def usd_to_size(symbol, leverage, usd_size, is_buy):
 def ask_bid(symbol):
     'this gets the bid ask for any symbol passed in'
 
-    url = 'https://api.hyperliquid-testnet.xyz/info'
+    url = 'https://api.hyperliquid.xyz/info'
     headers = {'Content-Type': 'application/json'}
 
     data = {
@@ -42,7 +41,7 @@ def ask_bid(symbol):
 
 def get_sz_px_decimals(symbol):
     'This return size decimals and price decimals'
-    url = 'https://api.hyperliquid-testnet.xyz/info'
+    url = 'https://api.hyperliquid.xyz/info'
     headers = {'Content-Type': 'application/json'}
     data = {'type': 'meta'}
 
@@ -75,7 +74,7 @@ def get_sz_px_decimals(symbol):
 
 def limit_order(coin, is_buy, size, leverage, limit_px, reduce_only, account):
     
-    exchange = Exchange(account, constants.TESTNET_API_URL)
+    exchange = Exchange(account, constants.MAINNET_API_URL)
     exchange.update_leverage(leverage, coin, is_cross=True)
 
     #rounding = get_sz_px_decimals(coin)[0]
@@ -103,7 +102,7 @@ def limit_order(coin, is_buy, size, leverage, limit_px, reduce_only, account):
     return order_result, order_id, erreur
 
 def market_open(coin, is_buy, usd_size, leverage, px, reduce_only, account):
-    exchange = Exchange(account, constants.TESTNET_API_URL)
+    exchange = Exchange(account, constants.MAINNET_API_URL)
     exchange.update_leverage(leverage, coin)
 
     sz = usd_to_size(coin, leverage, usd_size, is_buy)
@@ -121,7 +120,7 @@ def market_open(coin, is_buy, usd_size, leverage, px, reduce_only, account):
 
 def market_close(coin, sz, leverage, px, account):
 
-    exchange = Exchange(account, constants.TESTNET_API_URL)
+    exchange = Exchange(account, constants.MAINNET_API_URL)
     exchange.update_leverage(leverage, coin)
 
     rounding = get_sz_px_decimals(coin)[0]
@@ -136,10 +135,10 @@ def market_close(coin, sz, leverage, px, account):
 
 def cancel_all_orders(account):
 
-    exchange = Exchange(account, constants.TESTNET_API_URL)
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
+    exchange = Exchange(account, constants.MAINNET_API_URL)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
 
-    open_orders = info.open_orders(address)
+    open_orders = info.open_orders(account.address)
 
     for open_order in open_orders:
         exchange.cancel(open_order['coin'], open_order['oid'])
@@ -165,8 +164,8 @@ def kill_switch(symbol, account):
 
 
 def close_all_positions(account):
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
-    user_state = info.user_state(address)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
+    user_state = info.user_state(account.address)
     positions = []
 
     cancel_all_orders(account)
@@ -180,7 +179,7 @@ def close_all_positions(account):
 
 def is_order_filled(user_adress, order_id):
 
-    url = "https://api.hyperliquid-testnet.xyz/info"
+    url = "https://api.hyperliquid.xyz/info"
     headers = {"Content-Type": "application/json"}
 
     data = {
@@ -206,7 +205,7 @@ def is_order_filled(user_adress, order_id):
                 while order_found["isTrigger"] == False:
                     time.sleep(0.5)
 
-                    url = "https://api.hyperliquid-testnet.xyz/info"
+                    url = "https://api.hyperliquid.xyz/info"
                     headers = {"Content-Type": "application/json"}
 
                     data = {
@@ -237,8 +236,8 @@ def is_order_filled(user_adress, order_id):
 
 
 def show_open_orders(account):
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
-    open_orders = info.open_orders(address)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
+    open_orders = info.open_orders(account.address)
 
     order = []
     pos_sym = []
@@ -262,10 +261,10 @@ def show_open_orders(account):
 
 def cancel_orders(account, coin, oid):
 
-    exchange = Exchange(account, constants.TESTNET_API_URL)
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
+    exchange = Exchange(account, constants.MAINNET_API_URL)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
 
-    open_orders = info.open_orders(address)
+    open_orders = info.open_orders(account.address)
     for open_order in open_orders:
         if open_order['oid'] == oid:
             exchange.cancel(coin, oid)
