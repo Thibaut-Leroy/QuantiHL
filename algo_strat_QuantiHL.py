@@ -1,7 +1,6 @@
 import order_QuantiHL as orderHL
 import time
 import get_data_QuantiHL as get_data_HL
-from key_file import address
 from key_file import BotFather_QantiHL_key as BF_QauntiHL_key
 import telebot
 
@@ -30,12 +29,12 @@ def bid_ask_strat_function(chat_id, coin, usd_commit, leverage, account):
 
     buy_order = orderHL.limit_order(coin, True, size, lev, bid, False, account)
     buy_order_id = buy_order[1]
-    orderHL.is_order_filled(address, buy_order_id)
+    orderHL.is_order_filled(account.address, buy_order_id)
     send_message_when_order_filled(chat_id, True, usd_commit, coin, bid, leverage)
 
     sell_order = orderHL.limit_order(coin, False, size, lev, ask, True, account)
     sell_order_id = sell_order[1]
-    orderHL.is_order_filled(address, sell_order_id)
+    orderHL.is_order_filled(account.address, sell_order_id)
     send_message_when_order_filled(chat_id, False, usd_commit, coin, ask, leverage)
 
     # Add something to track PNL and number of winning position
@@ -109,7 +108,7 @@ def sma_strat_function(coin, usd_commit, leverage, take_profit, stop_loss, coin_
             if buy_signal:
                 buy_order = orderHL.limit_order(coin, True, size, lev, ask, False, account)
                 buy_order_id = buy_order[1]
-                orderHL.is_order_filled(address, buy_order_id)
+                orderHL.is_order_filled(account.address, buy_order_id)
                 in_pos = True
                 pos_size = 1
                 tp = bid * (1 + take_profit)
@@ -118,7 +117,7 @@ def sma_strat_function(coin, usd_commit, leverage, take_profit, stop_loss, coin_
             elif sell_signal:
                 sell_order = orderHL.limit_order(coin, False, size, lev, bid, False, account)
                 sell_order_id = sell_order[1]
-                orderHL.is_order_filled(address, sell_order_id)
+                orderHL.is_order_filled(account.address, sell_order_id)
                 in_pos = True
                 pos_size = -1
                 tp = ask * (1 - take_profit)
@@ -130,7 +129,7 @@ def sma_strat_function(coin, usd_commit, leverage, take_profit, stop_loss, coin_
                 if ask >= tp or bid <= sl:
                     close_buy_position = orderHL.limit_order(coin, False, size, lev, ask if ask>=tp else bid, True, account)
                     sell_order_id = close_buy_position[1]
-                    orderHL.is_order_filled(address, sell_order_id)
+                    orderHL.is_order_filled(account.address, sell_order_id)
                     # Add something to track PNL and number of winning position
                 else:
                     print(f'Neither Take Profit nor Stop Loss have been reached, current price: {bid:2f}/{ask:2f}, SL: {sl:2f}, TP: {tp:2f}')
@@ -139,7 +138,7 @@ def sma_strat_function(coin, usd_commit, leverage, take_profit, stop_loss, coin_
                 if bid >= tp or ask <= sl:
                     close_sell_position = orderHL.limit_order(coin, True, size, lev, bid if bid>=tp else ask, True, account)
                     buy_order_id = close_sell_position[1]
-                    orderHL.is_order_filled(address, buy_order_id)
+                    orderHL.is_order_filled(account.address, buy_order_id)
                     # Add something to track PNL and number of winning position
                 else:
                     print(f'Neither Take Profit nor Stop Loss have been reached, current price: {bid:2f}/{ask:2f}, SL: {sl:2f}, TP: {tp:2f}')
