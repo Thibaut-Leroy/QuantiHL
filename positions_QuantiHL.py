@@ -1,11 +1,10 @@
 from hyperliquid.info import Info
 from hyperliquid.utils import constants
-from key_file import address
 
 def get_all_positions(account):
 
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
-    user_state = info.user_state(address)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
+    user_state = info.user_state(account.address)
     account_val = user_state['marginSummary']['accountValue']
     account_val = round(float(account_val), 2)
 
@@ -38,8 +37,8 @@ def get_all_positions(account):
     return positions, symbol, size, leverage, value, pos_type, entry_px, pnl_perc, account_val
 
 def get_specific_position(coin, account):
-    info = Info(constants.TESTNET_API_URL, skip_ws=True)
-    user_state = info.user_state(address)
+    info = Info(constants.MAINNET_API_URL, skip_ws=True)
+    user_state = info.user_state(account.address)
     account_val = user_state['marginSummary']['accountValue']
     account_val = round(float(account_val), 2)
 
